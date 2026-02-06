@@ -1,0 +1,13 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+section.rvpw-recently-view.products {
+	max-width: var(--wp--style--global--wide-size);
+}
+
+.rvpw-recently-view .woocommerce ul.products li.product {
+	align-items: center;
+	text-align: center;
+}
