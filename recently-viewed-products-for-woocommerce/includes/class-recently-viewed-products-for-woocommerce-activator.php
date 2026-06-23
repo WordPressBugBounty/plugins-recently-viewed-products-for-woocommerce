@@ -1,33 +1,35 @@
 <?php
 /**
- * Fired during plugin activation
+ * Fired during activation.
  *
- * @link       https://in.linkedin.com/in/maheshvajapara
- * @since      2.0.0
- *
- * @package    RVPW_Recently_Viewed_Products_For_Woocommerce
- * @subpackage RVPW_Recently_Viewed_Products_For_Woocommerce/includes
+ * @package RVPW_Recently_Viewed_Products_For_Woocommerce
  */
 
-/**
- * Fired during plugin activation.
- *
- * This class defines all code necessary to run during the plugin's activation.
- *
- * @since      2.0.0
- * @package    RVPW_Recently_Viewed_Products_For_Woocommerce
- * @subpackage RVPW_Recently_Viewed_Products_For_Woocommerce/includes
- * @author     Mahesh Patel <p.mahesh8850@gmail.com>
- */
+if ( ! defined( 'WPINC' ) ) {
+	die;
+}
+
 class RVPW_Recently_Viewed_Products_For_Woocommerce_Activator {
 
 	/**
-	 * Short Description. (use period)
+	 * Activation logic.
 	 *
-	 * Long Description.
+	 * Seeds default settings without overwriting any value an existing
+	 * install has already saved, keeping upgrades non-destructive.
 	 *
-	 * @since    2.0.0
+	 * @return void
 	 */
 	public static function rvpw_activate() {
+		require_once RVPW_PLUGIN_DIR . 'includes/class-recently-viewed-products-for-woocommerce-settings.php';
+
+		$current = get_option( RVPW_Recently_Viewed_Products_For_Woocommerce_Settings::OPTION_KEY, array() );
+		if ( ! is_array( $current ) ) {
+			$current = array();
+		}
+
+		update_option(
+			RVPW_Recently_Viewed_Products_For_Woocommerce_Settings::OPTION_KEY,
+			wp_parse_args( $current, RVPW_Recently_Viewed_Products_For_Woocommerce_Settings::get_defaults() )
+		);
 	}
 }

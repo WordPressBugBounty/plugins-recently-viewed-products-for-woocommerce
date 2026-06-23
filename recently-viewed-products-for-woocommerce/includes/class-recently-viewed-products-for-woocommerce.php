@@ -1,217 +1,155 @@
 <?php
 /**
- * The file that defines the core plugin class
+ * Core plugin class.
  *
- * A class definition that includes attributes and functions used across both the
- * public-facing side of the site and the admin area.
- *
- * @link       https://in.linkedin.com/in/maheshvajapara
- * @since      2.0.0
- *
- * @package    RVPW_Recently_Viewed_Products_For_Woocommerce
- * @subpackage RVPW_Recently_Viewed_Products_For_Woocommerce/includes
+ * @package RVPW_Recently_Viewed_Products_For_Woocommerce
  */
 
-/**
- * The core plugin class.
- *
- * This is used to define internationalization, admin-specific hooks, and
- * public-facing site hooks.
- *
- * Also maintains the unique identifier of this plugin as well as the current
- * version of the plugin.
- *
- * @since      2.0.0
- * @package    RVPW_Recently_Viewed_Products_For_Woocommerce
- * @subpackage RVPW_Recently_Viewed_Products_For_Woocommerce/includes
- * @author     Mahesh Patel <p.mahesh8850@gmail.com>
- */
 class RVPW_Recently_Viewed_Products_For_Woocommerce {
 
 	/**
-	 * The loader that's responsible for maintaining and registering all hooks that power
-	 * the plugin.
+	 * Loader.
 	 *
-	 * @since    2.0.0
-	 * @access   protected
-	 * @var      RVPW_Recently_Viewed_Products_For_Woocommerce_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var RVPW_Recently_Viewed_Products_For_Woocommerce_Loader
 	 */
 	protected $loader;
 
 	/**
-	 * The unique identifier of this plugin.
+	 * Plugin slug.
 	 *
-	 * @since    2.0.0
-	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+	 * @var string
 	 */
 	protected $plugin_name;
 
 	/**
-	 * The current version of the plugin.
+	 * Plugin version.
 	 *
-	 * @since    2.0.0
-	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @var string
 	 */
 	protected $version;
 
 	/**
-	 * Define the core functionality of the plugin.
+	 * WooCommerce active.
 	 *
-	 * Set the plugin name and the plugin version that can be used throughout the plugin.
-	 * Load the dependencies, define the locale, and set the hooks for the admin area and
-	 * the public-facing side of the site.
-	 *
-	 * @since    2.0.0
+	 * @var bool
+	 */
+	protected $is_woocommerce_active = false;
+
+	/**
+	 * Constructor.
 	 */
 	public function __construct() {
-		if ( defined( 'RVPW_RECENTLY_VIEWED_PRODUCTS_FOR_WOOCOMMERCE_VERSION' ) ) {
-			$this->version = RVPW_RECENTLY_VIEWED_PRODUCTS_FOR_WOOCOMMERCE_VERSION;
-		} else {
-			$this->version = '2.0.0';
-		}
+		$this->version     = defined( 'RVPW_VERSION' ) ? RVPW_VERSION : '2.2.0';
 		$this->plugin_name = 'recently-viewed-products-for-woocommerce';
 
 		$this->load_dependencies();
-		$this->set_locale();
+		$this->define_common_hooks();
 		$this->define_admin_hooks();
-		$this->define_public_hooks();
+		$this->is_woocommerce_active = $this->is_woocommerce_active();
+		if ( $this->is_woocommerce_active ) {
+			$this->define_public_hooks();
+		}
 	}
 
 	/**
-	 * Load the required dependencies for this plugin.
+	 * Load required files.
 	 *
-	 * Include the following files that make up the plugin:
-	 *
-	 * - RVPW_Recently_Viewed_Products_For_Woocommerce_Loader. Orchestrates the hooks of the plugin.
-	 * - RVPW_Recently_Viewed_Products_For_Woocommerce_I18n. Defines internationalization functionality.
-	 * - RVPW_Recently_Viewed_Products_For_Woocommerce_Admin. Defines all hooks for the admin area.
-	 * - RVPW_Recently_Viewed_Products_For_Woocommerce_Public. Defines all hooks for the public side of the site.
-	 *
-	 * Create an instance of the loader which will be used to register the hooks
-	 * with WordPress.
-	 *
-	 * @since    2.0.0
-	 * @access   private
+	 * @return void
 	 */
 	private function load_dependencies() {
-
-		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
-		 */
-		require_once plugin_dir_path( __DIR__ ) . 'includes/class-recently-viewed-products-for-woocommerce-loader.php';
-
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
-		require_once plugin_dir_path( __DIR__ ) . 'includes/class-recently-viewed-products-for-woocommerce-i18n.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once plugin_dir_path( __DIR__ ) . 'admin/class-recently-viewed-products-for-woocommerce-admin.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( __DIR__ ) . 'public/class-recently-viewed-products-for-woocommerce-public.php';
-
+		require_once RVPW_PLUGIN_DIR . 'includes/class-recently-viewed-products-for-woocommerce-loader.php';
+		require_once RVPW_PLUGIN_DIR . 'includes/class-recently-viewed-products-for-woocommerce-settings.php';
+		require_once RVPW_PLUGIN_DIR . 'admin/class-recently-viewed-products-for-woocommerce-admin.php';
+		require_once RVPW_PLUGIN_DIR . 'public/class-recently-viewed-products-for-woocommerce-public.php';
 		$this->loader = new RVPW_Recently_Viewed_Products_For_Woocommerce_Loader();
 	}
 
 	/**
-	 * Define the locale for this plugin for internationalization.
+	 * Common hooks.
 	 *
-	 * Uses the RVPW_Recently_Viewed_Products_For_Woocommerce_I18n class in order to set the domain and to register the hook
-	 * with WordPress.
-	 *
-	 * @since    2.0.0
-	 * @access   private
+	 * @return void
 	 */
-	private function set_locale() {
-
-		$plugin_i18n = new RVPW_Recently_Viewed_Products_For_Woocommerce_I18n();
-
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+	private function define_common_hooks() {
+		// HPOS compatibility is declared at include time in the main plugin file
+		// (WooCommerce fires before_woocommerce_init earlier than this boot).
+		$this->loader->add_action( 'admin_notices', $this, 'maybe_render_woocommerce_notice' );
 	}
 
 	/**
-	 * Register all of the hooks related to the admin area functionality
-	 * of the plugin.
+	 * Admin hooks.
 	 *
-	 * @since    2.0.0
-	 * @access   private
+	 * @return void
 	 */
 	private function define_admin_hooks() {
-
 		$plugin_admin = new RVPW_Recently_Viewed_Products_For_Woocommerce_Admin( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'rvpw_woocommerce_recently_viewed_products_add_plugin_page' );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'rvpw_woocommerce_recently_viewed_products_page_init' );
-		$this->loader->add_filter( 'plugin_action_links', $plugin_admin, 'rvpw_settings_link', 10, 2 );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_admin_menu' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_assets' );
+		$this->loader->add_action( 'admin_post_rvpw_save_settings', $plugin_admin, 'save_settings' );
+		$this->loader->add_filter( 'plugin_action_links_' . plugin_basename( RVPW_PLUGIN_FILE ), $plugin_admin, 'rvpw_settings_link' );
 	}
 
 	/**
-	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
+	 * Public hooks.
 	 *
-	 * @since    2.0.0
-	 * @access   private
+	 * @return void
 	 */
 	private function define_public_hooks() {
-
-		$plugin_public                                = new RVPW_Recently_Viewed_Products_For_Woocommerce_Public( $this->get_plugin_name(), $this->get_version() );
-		$woocommerce_recently_viewed_products_options = get_option( 'rvpw_woocommerce_recently_viewed_products_option_name' ); // Array of All Options.
-		$rvpw_hide_section_3                               = isset( $woocommerce_recently_viewed_products_options['rvpw_hide_section_3'] ) ? esc_attr($woocommerce_recently_viewed_products_options['rvpw_hide_section_3']) : '';
-		if ( 'true' !== $rvpw_hide_section_3 ) {
-			$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-			$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-			$this->loader->add_action( 'template_redirect', $plugin_public, 'rvpw_setcookies', 20 );
-			$this->loader->add_action( 'woocommerce_after_single_product_summary', $plugin_public, 'rvpw_recently_viewed_products_woo', 40 );
-		}
+		$plugin_public = new RVPW_Recently_Viewed_Products_For_Woocommerce_Public( $this->get_plugin_name(), $this->get_version() );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'register_assets' );
+		$this->loader->add_action( 'template_redirect', $plugin_public, 'track_product_view', 20 );
+		$this->loader->add_action( 'wp', $plugin_public, 'register_product_page_placement' );
+		$this->loader->add_action( 'rest_api_init', $plugin_public, 'register_rest_routes' );
 	}
 
 	/**
-	 * Run the loader to execute all of the hooks with WordPress.
+	 * Show admin notice when WooCommerce is inactive.
 	 *
-	 * @since    2.0.0
+	 * @return void
+	 */
+	public function maybe_render_woocommerce_notice() {
+		if ( $this->is_woocommerce_active() ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'activate_plugins' ) ) {
+			return;
+		}
+		?>
+		<div class="notice notice-error"><p><?php esc_html_e( 'Recently Viewed Product for WooCommerce requires WooCommerce to be installed and active.', 'recently-viewed-products-for-woocommerce' ); ?></p></div>
+		<?php
+	}
+
+	/**
+	 * Check WooCommerce active.
+	 *
+	 * @return bool
+	 */
+	private function is_woocommerce_active() {
+		return class_exists( 'WooCommerce' );
+	}
+
+	/**
+	 * Run hooks.
+	 *
+	 * @return void
 	 */
 	public function run() {
 		$this->loader->run();
 	}
 
 	/**
-	 * The name of the plugin used to uniquely identify it within the context of
-	 * WordPress and to define internationalization functionality.
+	 * Get plugin name.
 	 *
-	 * @since     2.0.0
-	 * @return    string    The name of the plugin.
+	 * @return string
 	 */
 	public function get_plugin_name() {
 		return $this->plugin_name;
 	}
 
 	/**
-	 * The reference to the class that orchestrates the hooks with the plugin.
+	 * Get version.
 	 *
-	 * @since     2.0.0
-	 * @return    RVPW_Recently_Viewed_Products_For_Woocommerce_Loader    Orchestrates the hooks of the plugin.
-	 */
-	public function get_loader() {
-		return $this->loader;
-	}
-
-	/**
-	 * Retrieve the version number of the plugin.
-	 *
-	 * @since     2.0.0
-	 * @return    string    The version number of the plugin.
+	 * @return string
 	 */
 	public function get_version() {
 		return $this->version;

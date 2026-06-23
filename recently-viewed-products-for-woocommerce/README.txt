@@ -1,73 +1,117 @@
-=== Recently Viewed Product for WooCommerce ===
+﻿=== Recently Viewed Product for WooCommerce ===
 
 Contributors: maheshpatel
-Tags: woocommerce,  recently viewed product, online store, shopping cart, e-commerce
-Requires at least: 5.0
-Tested up to: 6.7.1
+Tags: woocommerce, recently viewed product, ecommerce
+Requires at least: 6.0
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.0.0
+Requires Plugins: woocommerce
+WC requires at least: 6.0
+WC tested up to: 10.8.1
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Recently Viewed Products for WooCommerce Listing page, you can easily add recently viewed product section by activate the plugin.
+Show customers the products they recently viewed — lightweight,
+cookie-based, no database tracking.
 
 == Description ==
 
-Display recently browsed items to jog your customers' memory regarding their previous interests. Eliminate the need for customers to redo their searches, leading to an uptick in sales. You can manage plugin title, display list of product and layout of product from admin.
+Recently Viewed Product for WooCommerce displays a personalized list
+of products each visitor has viewed, helping them find their way back
+to items they're interested in.
 
-Maximize Sales and Convenience with Recently Viewed Product for WooCommerce
+**How it works**
 
-Don't let your customers lose sight of what caught their eye! Introducing our "Recently Viewed Product for WooCommerce" feature, designed to enhance their shopping experience and boost your sales.
+Product views are tracked in a small first-party browser cookie —
+no database writes, no external services. The list updates
+automatically as the visitor browses.
 
-Why "Recently Viewed Product for WooCommerce" Matter:
-Convenience Redefined: Save your customers time and effort by displaying items they've recently browsed. No more repeating searches or losing track of favorite finds.
+**Display options**
 
-Personalized Shopping: Showcasing previously viewed products demonstrates that you value your customers' preferences. It adds a personalized touch to their journey, enhancing their overall satisfaction.
+* Automatic placement on the single product page (position
+  configurable).
+* Anywhere on your site via the `[rvpw_products]` shortcode —
+  pages, posts, widgets, or the block editor's Shortcode block.
 
-Increase Sales: By keeping desired items in plain sight, you significantly increase the likelihood of conversion. Reminding customers of products they've shown interest in nudges them closer to making a purchase.
+**Key features**
 
-How It Works:
-Seamlessly integrated into your website or app interface.
-Customizable display options to match your brand's aesthetic.
-Compatible across devices for a consistent shopping experience.
-The Bottom Line:
-Empower your customers with the convenience they crave while driving up your sales figures. With "Recently Viewed Product for WooCommerce," you not only streamline the shopping process but also foster a deeper connection with your audience.
-
-Ready to revolutionize your customers' shopping journey? Let's get started!
+* Grid and List layouts with per-device column control.
+* Show/hide image, title, price, rating, and add-to-cart per item.
+* Configurable cookie lifetime (1–365 days).
+* Toggle guest and logged-in tracking independently.
+* Shortcode generator with live preview and one-click copy.
+* Optional: delete all plugin data on uninstall.
+* HPOS compatible.
 
 == Installation ==
 
-= Installation from within WordPress =
-Simply Install the "Recently Viewed Product for WooCommerce" plugin and active it from plugin directory page. After plugin with start that work and plugin dislay recently viewed product section in product detail page. 
+1. Upload the plugin folder to `/wp-content/plugins/`.
+2. Activate the plugin through the Plugins menu.
+3. Configure at WooCommerce > Recently Viewed Products.
 
-1. Visit **Plugins > Add New**.
-2. Search for **Recently Viewed Product for WooCommerce**.
-3. Install and activate the Recently Viewed Product for WooCommerce plugin.
+== Shortcode ==
 
-= Manual installation =
+`[rvpw_products]`
 
-1. Upload the entire `recently-viewed-products-for-woocommerce` folder to the `/wp-content/plugins/` directory.
-2. Visit **Plugins**.
-3. Activate the Recently Viewed Product for WooCommerce plugin.
+Place this shortcode on any page, post, or widget area to display
+the recently viewed list in that location.
+
+== Privacy & Cookies ==
+
+This plugin stores only WooCommerce product IDs in a single
+first-party browser cookie (`rvpw_recently_viewed_{site_id}`).
+No personal data (names, emails, IP addresses) is stored or
+transmitted. Nothing is written to the database for tracking.
+
+The cookie expires according to the "Cookie expiry (days)" setting
+(default: 30 days). Tracking can be disabled for guests and/or
+logged-in users from the General tab.
 
 == Frequently Asked Questions ==
 
-= Waht is Recently Viewed Product for WooCommerce Plugin? =
+= Where are views recorded? =
 
-Recently Viewed Product for WooCommerce Plugin provide functionality to display most recent product under product detail.
+Only on single product pages, subject to your guest / logged-in
+tracking settings.
 
-= How we can manage section title? =
+= Will a product show up in its own "recently viewed" list? =
 
-You can manage it from admin under Settings > Recently viewd Products.
+No. The current product is always excluded from the list.
 
-= I want to display 10 product in recently viewed product section? =
+= Does it work with caching plugins? =
 
-Yes, you can manage it from Settings > Recently viewd Products.
+Display works normally. A product viewed on a fully cached page
+may not be recorded until the cache is bypassed — this is inherent
+to server-side cookie tracking.
 
+= Does it store personal data? =
+
+No. Only product IDs, in the visitor's own browser. Nothing is
+sent off-site.
 
 == Changelog ==
 
-= 2.0.0 =
+= 2.2.0 =
+* Added: List layout alongside Grid.
+* Added: multiple custom CSS classes support.
+* Fixed: saving one settings tab no longer resets others.
+* Fixed: responsive column settings respected for auto-placement.
+* Fixed: product count resolved before display limit is applied.
+* Fixed: empty-state message no longer shows on product pages
+  with no history.
+* Improved: redesigned accessible (WCAG) admin UI — tabbed
+  settings, toggle switches, help text, sticky save bar.
+* Improved: shortcode copy uses modern Clipboard API with
+  live preview.
+* Verified: zero errors against WordPress Plugin Check PHPCS
+  rulesets.
 
-* Create Initial Plugin.
-* Release version of  2.0.0.
+= 2.1.0 =
+* Added modern settings architecture, admin tabs, and shortcode
+  generator UI.
+* Improved tracking and rendering logic.
+* Added uninstall cleanup option.
+
+= 2.0.0 =
+* Initial release.

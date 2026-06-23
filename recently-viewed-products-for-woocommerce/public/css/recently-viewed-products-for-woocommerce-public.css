@@ -1,13 +1,134 @@
 /**
- * All of the CSS for your public-facing functionality should be
- * included in this file.
+ * Front-end styles for Recently Viewed Products for WooCommerce.
+ *
+ * @package RVPW_Recently_Viewed_Products_For_Woocommerce
  */
 
-section.rvpw-recently-view.products {
-	max-width: var(--wp--style--global--wide-size);
+.rvpw-products {
+	margin: 24px 0;
 }
 
-.rvpw-recently-view .woocommerce ul.products li.product {
+/* Defensive, wrapper-scoped resets so the section renders predictably across
+   themes/page builders and can never blow up (or be blown up by) global rules. */
+.rvpw-products,
+.rvpw-products *,
+.rvpw-products *::before,
+.rvpw-products *::after {
+	box-sizing: border-box;
+}
+
+.rvpw-products img,
+.rvpw-products svg {
+	max-width: 100%;
+	height: auto;
+}
+
+/* Placeholder shown before AJAX injection (cache-friendly mode). */
+.rvpw-ajax {
+	min-height: 1px;
+}
+
+.rvpw-products .rvpw-heading {
+	margin-bottom: 14px;
+	font-size: 1.25rem;
+}
+
+.rvpw-products .rvpw-grid {
+	display: grid;
+	grid-template-columns: repeat(var(--rvpw-mobile-columns, 2), minmax(0, 1fr));
+	gap: 16px;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.rvpw-products .rvpw-product {
+	margin: 0;
+}
+
+.rvpw-products .rvpw-product__link {
+	display: block;
+	text-decoration: none;
+}
+
+.rvpw-products .rvpw-product__link img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.rvpw-products .woocommerce-loop-product__title {
+	font-size: 14px;
+	line-height: 1.4;
+	margin: 10px 0 6px;
+}
+
+.rvpw-products .price {
+	display: block;
+	margin-bottom: 8px;
+}
+
+.rvpw-products .button {
+	display: inline-block;
+}
+
+/* Improve keyboard focus visibility for accessibility. */
+.rvpw-products a:focus-visible,
+.rvpw-products .button:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+.rvpw-empty {
+	margin: 12px 0;
+}
+
+/* List layout ------------------------------------------------------------- */
+.rvpw-layout-list .rvpw-grid {
+	grid-template-columns: 1fr;
+	gap: 12px;
+}
+
+.rvpw-layout-list .rvpw-product {
+	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
-	text-align: center;
+	gap: 8px 14px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.rvpw-layout-list .rvpw-product:last-child {
+	border-bottom: none;
+	padding-bottom: 0;
+}
+
+.rvpw-layout-list .rvpw-product__link {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	flex: 1 1 100%;
+	min-width: 0;
+}
+
+.rvpw-layout-list .rvpw-product__link img {
+	flex: 0 0 88px;
+	width: 88px;
+}
+
+.rvpw-layout-list .woocommerce-loop-product__title {
+	margin: 0;
+}
+
+/* Responsive grid columns ------------------------------------------------- */
+@media (min-width: 768px) {
+	.rvpw-layout-grid .rvpw-grid {
+		grid-template-columns: repeat(var(--rvpw-tablet-columns, 3), minmax(0, 1fr));
+	}
+}
+
+@media (min-width: 1024px) {
+	.rvpw-layout-grid .rvpw-grid {
+		grid-template-columns: repeat(var(--rvpw-desktop-columns, 4), minmax(0, 1fr));
+	}
 }
