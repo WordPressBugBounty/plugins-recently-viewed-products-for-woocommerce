@@ -1,0 +1,143 @@
+/**
+ * Carousel layout styles for Recently Viewed Products for WooCommerce.
+ * Loaded only when the carousel layout is rendered. Builds on the shared card
+ * styles in the public stylesheet and only adds the slider chrome.
+ *
+ * @package RVPW_Recently_Viewed_Products_For_Woocommerce
+ */
+
+.rvpw-layout-carousel .rvpw-carousel {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+}
+
+.rvpw-layout-carousel .rvpw-carousel__viewport {
+	/* `flex-basis: 0` (not auto) is essential: with `auto` the viewport sizes to
+	   its scrollable content and collapses to the cards' intrinsic width instead
+	   of filling the row, which made the whole carousel appear narrow/centered.
+	   Basis 0 + grow makes it always span the full available width. */
+	flex: 1 1 0%;
+	min-width: 0;
+	width: 100%;
+	/* Vertical padding gives the cards' hover-lift and shadow room to breathe
+	   instead of being clipped by the scroll container. */
+	padding: 6px 2px 10px;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.rvpw-layout-carousel .rvpw-carousel__viewport::-webkit-scrollbar {
+	display: none;
+}
+
+/* Override the grid display for the sliding track. */
+.rvpw-layout-carousel .rvpw-carousel__track {
+	display: flex;
+	grid-template-columns: none;
+	gap: var(--rvpw-gap, 20px);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.rvpw-layout-carousel .rvpw-carousel__track .product.rvpw-product {
+	flex: 0 0 calc((100% - (var(--rvpw-mobile-columns, 2) - 1) * var(--rvpw-gap, 20px)) / var(--rvpw-mobile-columns, 2));
+	scroll-snap-align: start;
+}
+
+/* Arrows */
+.rvpw-layout-carousel .rvpw-carousel__arrow {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	font-size: 22px;
+	line-height: 1;
+	cursor: pointer;
+	border: 1px solid rgba(17, 24, 39, 0.12);
+	border-radius: 50%;
+	background: #fff;
+	color: inherit;
+	box-shadow: 0 1px 3px rgba(17, 24, 39, 0.10);
+	transition: background 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.rvpw-layout-carousel .rvpw-carousel__arrow:hover {
+	background: #f8fafc;
+	box-shadow: 0 3px 8px rgba(17, 24, 39, 0.14);
+}
+
+.rvpw-layout-carousel .rvpw-carousel__arrow:focus-visible {
+	outline: 2px solid var(--rvpw-focus, #2563eb);
+	outline-offset: 2px;
+}
+
+.rvpw-layout-carousel .rvpw-carousel__arrow[disabled] {
+	opacity: 0.35;
+	cursor: default;
+	box-shadow: none;
+}
+
+.rvpw-layout-carousel .rvpw-carousel__arrow[hidden] {
+	display: none;
+}
+
+/* Dots — forced onto their own full-width row beneath the track (the carousel
+   is a flex row, so without this the dots sit inline next to the arrows). */
+.rvpw-layout-carousel .rvpw-carousel__dots {
+	flex: 0 0 100%;
+	display: flex;
+	justify-content: center;
+	gap: 8px;
+	width: 100%;
+	margin-top: 14px;
+}
+
+.rvpw-layout-carousel .rvpw-carousel__dot {
+	width: 9px;
+	height: 9px;
+	padding: 0;
+	border: none;
+	border-radius: 50%;
+	background: rgba(17, 24, 39, 0.22);
+	cursor: pointer;
+	transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.rvpw-layout-carousel .rvpw-carousel__dot.is-active {
+	background: var(--rvpw-focus, #2563eb);
+	transform: scale(1.25);
+}
+
+.rvpw-layout-carousel .rvpw-carousel__dot:focus-visible {
+	outline: 2px solid var(--rvpw-focus, #2563eb);
+	outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+	.rvpw-layout-carousel .rvpw-carousel__track .product.rvpw-product {
+		flex-basis: calc((100% - (var(--rvpw-tablet-columns, 3) - 1) * var(--rvpw-gap, 20px)) / var(--rvpw-tablet-columns, 3));
+	}
+}
+
+@media (min-width: 1024px) {
+	.rvpw-layout-carousel .rvpw-carousel__track .product.rvpw-product {
+		flex-basis: calc((100% - (var(--rvpw-desktop-columns, 4) - 1) * var(--rvpw-gap, 20px)) / var(--rvpw-desktop-columns, 4));
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.rvpw-layout-carousel .rvpw-carousel__viewport {
+		scroll-behavior: auto;
+	}
+}

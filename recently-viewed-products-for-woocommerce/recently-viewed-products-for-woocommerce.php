@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       Recently Viewed Product for WooCommerce
+ * Plugin Name:       Recently Viewed Products for WooCommerce
  * Plugin URI:        https://in.linkedin.com/in/maheshvajapara
- * Description:       Display and manage recently viewed WooCommerce products with shortcode and product-page placement controls.
- * Version:           2.2.0
+ * Description:       Show WooCommerce recently viewed products in a grid, list, or carousel via shortcode, widget, block, or Elementor, plus most viewed products and follow-up emails.
+ * Version:           2.3.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Mahesh Patel
@@ -14,7 +14,7 @@
  * Domain Path:       /languages
  * Requires Plugins:  woocommerce
  * WC requires at least: 6.0
- * WC tested up to:   10.8.1
+ * WC tested up to:   10.9
  *
  * @package RVPW_Recently_Viewed_Products_For_Woocommerce
  */
@@ -23,10 +23,11 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'RVPW_VERSION', '2.2.0' );
+define( 'RVPW_VERSION', '2.3.0' );
 define( 'RVPW_PLUGIN_FILE', __FILE__ );
 define( 'RVPW_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RVPW_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'RVPW_ASSET_PREFIX', 'recently-viewed-products-for-woocommerce' );
 
 define( 'RVPW_RECENTLY_VIEWED_PRODUCTS_FOR_WOOCOMMERCE_VERSION', RVPW_VERSION );
 
@@ -77,8 +78,8 @@ require RVPW_PLUGIN_DIR . 'includes/class-recently-viewed-products-for-woocommer
  * Runs on `plugins_loaded` so that every active plugin (including WooCommerce)
  * is fully loaded before we detect WooCommerce and register front-end hooks.
  * Initializing at file-include time would check for the WooCommerce class
- * before it is defined and silently skip the shortcode and placement
- * registrations.
+ * before it is defined and silently skip the shortcode, widget, block,
+ * Elementor, tracking, and placement registrations.
  *
  * @return void
  */

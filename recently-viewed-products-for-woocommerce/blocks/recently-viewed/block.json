@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "rvpw/recently-viewed",
+	"version": "2.3.0",
+	"title": "Recently Viewed Products",
+	"category": "woocommerce",
+	"icon": "visibility",
+	"description": "Display a visitor's recently viewed WooCommerce products.",
+	"keywords": [ "recently viewed", "products", "woocommerce", "rvpw" ],
+	"textdomain": "recently-viewed-products-for-woocommerce",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"attributes": {
+		"title": { "type": "string", "default": "" },
+		"limit": { "type": "number", "default": 4 },
+		"columns": { "type": "number", "default": 4 },
+		"layout": { "type": "string", "default": "grid" },
+		"sort": { "type": "string", "default": "recent" },
+		"showImage": { "type": "boolean", "default": true },
+		"showTitle": { "type": "boolean", "default": true },
+		"showPrice": { "type": "boolean", "default": true },
+		"showRating": { "type": "boolean", "default": false },
+		"showCart": { "type": "boolean", "default": true }
+	},
+	"editorScript": "rvpw-block-editor",
+	"editorStyle": "rvpw-block-editor-style"
+}

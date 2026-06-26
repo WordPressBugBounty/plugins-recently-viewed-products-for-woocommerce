@@ -1,0 +1,14 @@
+/**
+ * Editor-only styles for the Recently Viewed Products block.
+ *
+ * @package RVPW_Recently_Viewed_Products_For_Woocommerce
+ */
+
+.rvpw-block-preview {
+	pointer-events: none;
+}
+
+.rvpw-block-preview .rvpw-empty {
+	color: #757575;
+	font-style: italic;
+}

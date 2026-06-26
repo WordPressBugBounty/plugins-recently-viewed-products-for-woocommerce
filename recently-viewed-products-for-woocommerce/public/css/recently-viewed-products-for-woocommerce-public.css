@@ -1,126 +1,465 @@
 /**
  * Front-end styles for Recently Viewed Products for WooCommerce.
  *
+ * A modern, lightweight and theme-agnostic product-card system. Everything is
+ * scoped under the `.rvpw-products` namespace and built on CSS Grid + Flexbox
+ * so it adapts to any theme or page builder without depending on theme CSS.
+ *
+ * Sections
+ *   1.  Design tokens (CSS custom properties — override-friendly)
+ *   2.  Section + heading
+ *   3.  Grid container
+ *   4.  Product card (shared by every layout)
+ *   5.  Media + badges
+ *   6.  Card body (title, rating, price, actions/button)
+ *   7.  List layout
+ *   8.  Compact modifier (opt-in via the custom CSS class field)
+ *   9.  Responsive columns
+ *   10. Accessibility, RTL & motion
+ *
  * @package RVPW_Recently_Viewed_Products_For_Woocommerce
  */
 
+/* 1. Design tokens -------------------------------------------------------- */
+/* Scoped to the section so they never leak, yet remain easy to override from
+   a theme or the plugin's custom-CSS field by re-declaring any variable. */
 .rvpw-products {
+	--rvpw-gap: 20px;
+	--rvpw-card-bg: #fff;
+	--rvpw-card-border: rgba(17, 24, 39, 0.08);
+	--rvpw-card-radius: 12px;
+	--rvpw-card-pad: 14px;
+	--rvpw-card-shadow: 0 1px 2px rgba(17, 24, 39, 0.04), 0 1px 3px rgba(17, 24, 39, 0.06);
+	--rvpw-card-shadow-hover: 0 10px 24px rgba(17, 24, 39, 0.10), 0 3px 8px rgba(17, 24, 39, 0.08);
+	--rvpw-image-ratio: 1 / 1;
+	--rvpw-image-fit: cover;
+	--rvpw-image-bg: #f4f4f5;
+	--rvpw-title-color: inherit;
+	--rvpw-title-size: 0.95rem;
+	--rvpw-muted: #6b7280;
+	--rvpw-price-color: inherit;
+	--rvpw-price-size: 1rem;
+	--rvpw-price-sale-color: inherit;
+	--rvpw-btn-bg: #111827;
+	--rvpw-btn-color: #fff;
+	--rvpw-btn-bg-hover: #1f2937;
+	--rvpw-badge-sale-bg: #16a34a;
+	--rvpw-badge-out-bg: #6b7280;
+	--rvpw-badge-color: #fff;
+	--rvpw-focus: #2563eb;
+	--rvpw-transition: 0.2s ease;
+
 	margin: 24px 0;
+	color: inherit;
 }
 
-/* Defensive, wrapper-scoped resets so the section renders predictably across
-   themes/page builders and can never blow up (or be blown up by) global rules. */
-.rvpw-products,
+/* Full-width guarantee --------------------------------------------------- */
+/* Block themes constrain direct children of a "constrained" layout to the
+   theme content width (`max-width: <content-size>; margin-inline: auto`),
+   which can make the section appear narrow and centered. We opt out so the
+   section always fills its container for every layout (grid, list, carousel).
+   The root class is repeated to beat real-class theme constraints. */
+.rvpw-products.rvpw-products {
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 100%;
+	margin-inline: 0;
+}
+
+/* The inner containers also span the full width of the section. */
+.rvpw-products .rvpw-grid,
+.rvpw-products .rvpw-carousel {
+	width: 100%;
+}
+
+/* Local box-sizing reset so theme defaults can't distort the layout. */
 .rvpw-products *,
 .rvpw-products *::before,
 .rvpw-products *::after {
 	box-sizing: border-box;
 }
 
-.rvpw-products img,
-.rvpw-products svg {
-	max-width: 100%;
-	height: auto;
-}
-
-/* Placeholder shown before AJAX injection (cache-friendly mode). */
-.rvpw-ajax {
-	min-height: 1px;
-}
-
+/* 2. Section + heading ---------------------------------------------------- */
 .rvpw-products .rvpw-heading {
-	margin-bottom: 14px;
-	font-size: 1.25rem;
-}
-
-.rvpw-products .rvpw-grid {
-	display: grid;
-	grid-template-columns: repeat(var(--rvpw-mobile-columns, 2), minmax(0, 1fr));
-	gap: 16px;
-	list-style: none;
+	margin: 0 0 16px;
 	padding: 0;
-	margin: 0;
-}
-
-.rvpw-products .rvpw-product {
-	margin: 0;
-}
-
-.rvpw-products .rvpw-product__link {
-	display: block;
-	text-decoration: none;
-}
-
-.rvpw-products .rvpw-product__link img {
-	display: block;
-	width: 100%;
-	height: auto;
-}
-
-.rvpw-products .woocommerce-loop-product__title {
-	font-size: 14px;
-	line-height: 1.4;
-	margin: 10px 0 6px;
-}
-
-.rvpw-products .price {
-	display: block;
-	margin-bottom: 8px;
-}
-
-.rvpw-products .button {
-	display: inline-block;
-}
-
-/* Improve keyboard focus visibility for accessibility. */
-.rvpw-products a:focus-visible,
-.rvpw-products .button:focus-visible {
-	outline: 2px solid currentColor;
-	outline-offset: 2px;
+	font-size: 1.35rem;
+	font-weight: 600;
+	line-height: 1.25;
+	letter-spacing: -0.01em;
 }
 
 .rvpw-empty {
 	margin: 12px 0;
+	color: var(--rvpw-muted);
 }
 
-/* List layout ------------------------------------------------------------- */
-.rvpw-layout-list .rvpw-grid {
-	grid-template-columns: 1fr;
-	gap: 12px;
+/* 3. Grid container ------------------------------------------------------- */
+.rvpw-products .rvpw-grid {
+	display: grid;
+	grid-template-columns: repeat(var(--rvpw-mobile-columns, 2), minmax(0, 1fr));
+	gap: var(--rvpw-gap);
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
-.rvpw-layout-list .rvpw-product {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 8px 14px;
-	padding-bottom: 12px;
-	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.rvpw-layout-list .rvpw-product:last-child {
-	border-bottom: none;
-	padding-bottom: 0;
-}
-
-.rvpw-layout-list .rvpw-product__link {
-	display: flex;
-	align-items: center;
-	gap: 14px;
-	flex: 1 1 100%;
-	min-width: 0;
-}
-
-.rvpw-layout-list .rvpw-product__link img {
-	flex: 0 0 88px;
-	width: 88px;
-}
-
-.rvpw-layout-list .woocommerce-loop-product__title {
+/* WooCommerce loop reset --------------------------------------------------
+   WooCommerce ships default grid styles for `ul.products li.product` (fixed
+   percentage widths, floats, clearfix and image margins) that are MORE
+   specific than our base classes and would otherwise squeeze every card into a
+   narrow floated column. We neutralise them here with a deliberately stronger
+   selector (the root class is repeated to raise specificity) so Grid/Flexbox
+   owns the layout — no !important required. */
+.rvpw-products.rvpw-products ul.rvpw-grid.products,
+.rvpw-products.rvpw-products ul.rvpw-grid.products li.product {
+	float: none;
+	clear: none;
+	width: auto;
+	max-width: none;
 	margin: 0;
 }
 
-/* Responsive grid columns ------------------------------------------------- */
+.rvpw-products.rvpw-products ul.rvpw-grid.products {
+	padding: 0;
+}
+
+.rvpw-products.rvpw-products ul.rvpw-grid.products::before,
+.rvpw-products.rvpw-products ul.rvpw-grid.products::after {
+	display: none;
+	content: "";
+}
+
+.rvpw-products.rvpw-products ul.rvpw-grid.products li.product .rvpw-product__link img {
+	margin: 0;
+}
+
+/* 4. Product card --------------------------------------------------------- */
+.rvpw-products .product.rvpw-product {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	width: auto;
+	float: none;
+	overflow: hidden;
+	background: var(--rvpw-card-bg);
+	border: 1px solid var(--rvpw-card-border);
+	border-radius: var(--rvpw-card-radius);
+	box-shadow: var(--rvpw-card-shadow);
+	transition: transform var(--rvpw-transition), box-shadow var(--rvpw-transition), border-color var(--rvpw-transition);
+}
+
+.rvpw-products .product.rvpw-product:hover,
+.rvpw-products .product.rvpw-product:focus-within {
+	transform: translateY(-3px);
+	box-shadow: var(--rvpw-card-shadow-hover);
+	border-color: rgba(17, 24, 39, 0.12);
+}
+
+/* 5. Media + badges ------------------------------------------------------- */
+.rvpw-products .rvpw-product__media {
+	position: relative;
+	display: block;
+	aspect-ratio: var(--rvpw-image-ratio);
+	background: var(--rvpw-image-bg);
+	overflow: hidden;
+}
+
+.rvpw-products .rvpw-product__link {
+	display: block;
+	height: 100%;
+	text-decoration: none;
+}
+
+/* Doubled root class so this wins over WooCommerce's default
+   `.woocommerce ul.products li.product a img { height: auto }` and the image
+   always fills the square media box instead of shrinking to its natural size. */
+.rvpw-products.rvpw-products .rvpw-product__media .rvpw-product__link img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	margin: 0;
+	padding: 0;
+	object-fit: var(--rvpw-image-fit);
+	transition: transform 0.4s ease;
+}
+
+.rvpw-products .product.rvpw-product:hover .rvpw-product__link img {
+	transform: scale(1.04);
+}
+
+.rvpw-products .rvpw-product__badge {
+	position: absolute;
+	top: 10px;
+	inset-inline-start: 10px;
+	z-index: 1;
+	padding: 3px 9px;
+	font-size: 0.7rem;
+	font-weight: 600;
+	line-height: 1.4;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	color: var(--rvpw-badge-color);
+	border-radius: 999px;
+	pointer-events: none;
+}
+
+.rvpw-products .rvpw-product__badge--sale {
+	background: var(--rvpw-badge-sale-bg);
+}
+
+.rvpw-products .rvpw-product__badge--out {
+	background: var(--rvpw-badge-out-bg);
+}
+
+/* 6. Card body ------------------------------------------------------------ */
+.rvpw-products .rvpw-product__body {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: 8px;
+	min-width: 0;
+	padding: var(--rvpw-card-pad);
+}
+
+.rvpw-products .rvpw-product__title-link {
+	text-decoration: none;
+	color: var(--rvpw-title-color);
+}
+
+.rvpw-products .rvpw-product__title-link:hover .rvpw-product__title,
+.rvpw-products .rvpw-product__title-link:focus-visible .rvpw-product__title {
+	color: var(--rvpw-focus);
+}
+
+.rvpw-products .woocommerce-loop-product__title.rvpw-product__title {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	min-height: calc(var(--rvpw-title-size) * 1.4 * 2);
+	font-size: var(--rvpw-title-size);
+	font-weight: 600;
+	line-height: 1.4;
+	color: inherit;
+	word-break: break-word;
+}
+
+.rvpw-products .rvpw-product__rating {
+	margin: 0;
+	font-size: 0.85rem;
+	line-height: 1;
+}
+
+/* Keep WooCommerce's star widget compact and left-aligned inside the card. */
+.rvpw-products .rvpw-product__rating .star-rating {
+	margin: 0;
+	font-size: 0.85rem;
+}
+
+/* Price sits just above the action area; margin-top auto pushes it down so
+   the price line stays aligned across cards of differing content height. */
+.rvpw-products .price.rvpw-product__price {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 4px 8px;
+	margin: auto 0 0;
+	padding: 0;
+	font-size: var(--rvpw-price-size);
+	font-weight: 600;
+	line-height: 1.4;
+	color: var(--rvpw-price-color);
+}
+
+/* Original price: lighter, struck through, sits before the sale price. */
+.rvpw-products .price.rvpw-product__price del {
+	font-weight: 400;
+	color: var(--rvpw-muted);
+	opacity: 0.85;
+}
+
+.rvpw-products .price.rvpw-product__price del .woocommerce-Price-amount {
+	text-decoration: line-through;
+}
+
+/* Sale price: emphasised, no underline (WooCommerce uses <ins>). */
+.rvpw-products .price.rvpw-product__price ins {
+	text-decoration: none;
+	font-weight: 700;
+	color: var(--rvpw-price-sale-color);
+}
+
+.rvpw-products .price.rvpw-product__price .woocommerce-Price-amount {
+	white-space: nowrap;
+}
+
+/* Actions: button pinned to the bottom of every card. */
+.rvpw-products .rvpw-product__actions {
+	margin-top: 4px;
+}
+
+/* Self-contained button styling (doubled root class so it wins over theme and
+   WooCommerce loop button rules) — never depends on theme CSS, but every value
+   is driven by an overridable token so a store can recolour it in one line. */
+.rvpw-products.rvpw-products .rvpw-product__button.button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 42px;
+	margin: 0;
+	padding: 9px 16px;
+	font-size: 0.875rem;
+	font-weight: 600;
+	line-height: 1.2;
+	text-align: center;
+	text-decoration: none;
+	color: var(--rvpw-btn-color);
+	background: var(--rvpw-btn-bg);
+	border: none;
+	border-radius: 8px;
+	box-shadow: none;
+	cursor: pointer;
+	transition: background var(--rvpw-transition), opacity var(--rvpw-transition);
+}
+
+.rvpw-products.rvpw-products .rvpw-product__button.button:hover,
+.rvpw-products.rvpw-products .rvpw-product__button.button:focus {
+	color: var(--rvpw-btn-color);
+	background: var(--rvpw-btn-bg-hover);
+}
+
+.rvpw-products.rvpw-products .rvpw-product__button.button.loading {
+	opacity: 0.7;
+}
+
+.rvpw-products.rvpw-products .rvpw-product__button.button.added {
+	opacity: 0.9;
+}
+
+/* WooCommerce AJAX "View cart" link that gets injected after add-to-cart. */
+.rvpw-products .rvpw-product__actions .added_to_cart {
+	display: inline-block;
+	margin-top: 8px;
+	font-size: 0.8rem;
+}
+
+/* 7. List layout ---------------------------------------------------------- */
+/* Horizontal card: image on the leading side, info on the trailing side. */
+.rvpw-layout-list .rvpw-grid {
+	grid-template-columns: 1fr;
+	gap: 14px;
+}
+
+.rvpw-layout-list .product.rvpw-product {
+	flex-direction: row;
+	/* Top-align so the media keeps its square ratio instead of stretching to
+	   the full (taller) height of the text column. */
+	align-items: flex-start;
+}
+
+.rvpw-layout-list .rvpw-product__media {
+	flex: 0 0 clamp(96px, 30%, 180px);
+	width: clamp(96px, 30%, 180px);
+	aspect-ratio: 1 / 1;
+}
+
+.rvpw-layout-list .rvpw-product__body {
+	align-self: stretch;
+	justify-content: center;
+	gap: 6px;
+}
+
+.rvpw-layout-list .woocommerce-loop-product__title.rvpw-product__title {
+	/* No need to reserve two lines in the horizontal layout. */
+	min-height: 0;
+}
+
+.rvpw-layout-list .price.rvpw-product__price {
+	margin-top: 0;
+}
+
+.rvpw-layout-list .rvpw-product__actions {
+	margin-top: 6px;
+}
+
+/* Repeated layout class keeps this above the doubled-root button base so the
+   list CTA stays inline (auto width) instead of stretching full width. */
+.rvpw-layout-list.rvpw-layout-list .rvpw-product__button.button {
+	width: auto;
+	align-self: flex-start;
+}
+
+/* 8. Compact modifier ----------------------------------------------------- */
+/* Opt-in: add the class "rvpw-compact" in the plugin's "CSS class" field (or
+   the shortcode `class` attribute). Ideal for narrow sidebars and widgets. */
+.rvpw-compact .rvpw-grid {
+	grid-template-columns: 1fr;
+	gap: 10px;
+}
+
+.rvpw-compact .product.rvpw-product {
+	flex-direction: row;
+	align-items: center;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	background: transparent;
+	border-bottom: 1px solid var(--rvpw-card-border);
+	border-radius: 0;
+}
+
+.rvpw-compact .product.rvpw-product:last-child {
+	border-bottom: none;
+}
+
+.rvpw-compact .product.rvpw-product:hover,
+.rvpw-compact .product.rvpw-product:focus-within {
+	transform: none;
+	box-shadow: none;
+}
+
+.rvpw-compact .rvpw-product__media {
+	flex: 0 0 64px;
+	width: 64px;
+	border-radius: 8px;
+}
+
+.rvpw-compact .product.rvpw-product:hover .rvpw-product__link img {
+	transform: none;
+}
+
+.rvpw-compact .rvpw-product__badge {
+	display: none;
+}
+
+.rvpw-compact .rvpw-product__body {
+	gap: 4px;
+	padding: 4px 0 4px 12px;
+}
+
+.rvpw-compact .woocommerce-loop-product__title.rvpw-product__title {
+	min-height: 0;
+	font-size: 0.85rem;
+}
+
+.rvpw-compact .price.rvpw-product__price {
+	margin: 0;
+	font-size: 0.85rem;
+}
+
+.rvpw-compact .rvpw-product__rating,
+.rvpw-compact .rvpw-product__actions {
+	display: none;
+}
+
+/* 9. Responsive columns --------------------------------------------------- */
 @media (min-width: 768px) {
 	.rvpw-layout-grid .rvpw-grid {
 		grid-template-columns: repeat(var(--rvpw-tablet-columns, 3), minmax(0, 1fr));
@@ -130,5 +469,51 @@
 @media (min-width: 1024px) {
 	.rvpw-layout-grid .rvpw-grid {
 		grid-template-columns: repeat(var(--rvpw-desktop-columns, 4), minmax(0, 1fr));
+	}
+}
+
+/* Mobile: collapse the list layout to a single, comfortable column. */
+@media (max-width: 480px) {
+	.rvpw-layout-list:not(.rvpw-compact) .product.rvpw-product {
+		flex-direction: column;
+	}
+
+	.rvpw-layout-list:not(.rvpw-compact) .rvpw-product__media {
+		flex-basis: auto;
+		max-width: none;
+	}
+
+	.rvpw-layout-list:not(.rvpw-compact) .rvpw-product__button.button {
+		width: 100%;
+	}
+}
+
+/* 10. Accessibility, RTL & motion ----------------------------------------- */
+.rvpw-products a:focus-visible,
+.rvpw-products .button:focus-visible {
+	outline: 2px solid var(--rvpw-focus);
+	outline-offset: 2px;
+	border-radius: 6px;
+}
+
+/* RTL: the logical properties above (inset-inline-*, margin-inline-*) already
+   flip automatically; this keeps the badge readable in explicit RTL contexts. */
+[dir="rtl"] .rvpw-products .rvpw-product__badge {
+	letter-spacing: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.rvpw-products .product.rvpw-product,
+	.rvpw-products .rvpw-product__link img,
+	.rvpw-products .rvpw-product__button.button {
+		transition: none;
+	}
+
+	.rvpw-products .product.rvpw-product:hover {
+		transform: none;
+	}
+
+	.rvpw-products .product.rvpw-product:hover .rvpw-product__link img {
+		transform: none;
 	}
 }

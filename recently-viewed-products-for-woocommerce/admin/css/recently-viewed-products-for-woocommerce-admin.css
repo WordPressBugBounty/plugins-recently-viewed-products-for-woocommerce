@@ -215,6 +215,11 @@
 	max-width: 100%;
 }
 
+.rvpw-field__control .rvpw-multiselect {
+	width: 100%;
+	max-width: 360px;
+}
+
 .rvpw-field__desc {
 	grid-column: 2;
 	margin: 0;
